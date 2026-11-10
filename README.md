@@ -93,27 +93,29 @@ Guion sugerido: splash → login (mostrar error de validación) → registro con
 
 ## 6. Screenshots
 
-### Splashscreen
-![Splash](screenshots/01-splash.png)
+### Splash y autenticación
+<table>
+  <tr><td align="center"><img src="screenshots/01-splash.png" width="230" alt="Splash"><br><sub>Splash</sub></td><td align="center"><img src="screenshots/02-login.png" width="230" alt="Login"><br><sub>Login</sub></td><td align="center"><img src="screenshots/02b-login-validacion.png" width="230" alt="Login con validación"><br><sub>Login con validación</sub></td></tr>
+  <tr><td align="center"><img src="screenshots/03-registro.png" width="230" alt="Registro con selección de rol"><br><sub>Registro con selección de rol</sub></td></tr>
+</table>
 
-### Autenticación
-![Login](screenshots/02-login.png)
-![Registro](screenshots/03-registro.png)
-
-### Dashboards
-![Dashboard Admin](screenshots/04-dashboard-admin.png)
-![Dashboard Docente](screenshots/05-dashboard-docente.png)
-![Dashboard Alumno](screenshots/06-dashboard-alumno.png)
+### Dashboards por rol
+<table>
+  <tr><td align="center"><img src="screenshots/04-dashboard-admin.png" width="230" alt="Administrador"><br><sub>Administrador</sub></td><td align="center"><img src="screenshots/05-dashboard-docente.png" width="230" alt="Docente"><br><sub>Docente</sub></td><td align="center"><img src="screenshots/06-dashboard-alumno.png" width="230" alt="Alumno"><br><sub>Alumno</sub></td></tr>
+</table>
 
 ### Listas
-![Lista principal](screenshots/07-lista-principal.png)
-![Lista detalle](screenshots/08-lista-detalle.png)
-![Estado vacío](screenshots/09-lista-vacia.png)
+<table>
+  <tr><td align="center"><img src="screenshots/07-lista-principal.png" width="230" alt="Usuarios y roles (Admin)"><br><sub>Usuarios y roles (Admin)</sub></td><td align="center"><img src="screenshots/08-lista-chats.png" width="230" alt="Bandeja de chats (Docente)"><br><sub>Bandeja de chats (Docente)</sub></td><td align="center"><img src="screenshots/11-mis-docentes.png" width="230" alt="Mis docentes (Alumno)"><br><sub>Mis docentes (Alumno)</sub></td></tr>
+  <tr><td align="center"><img src="screenshots/09-lista-vacia.png" width="230" alt="Estado vacío (búsqueda sin resultados)"><br><sub>Estado vacío (búsqueda sin resultados)</sub></td></tr>
+</table>
 
 ### Formularios
-![Formulario nuevo usuario](screenshots/10-formulario.png)
-![Formulario horario](screenshots/10b-formulario-horario.png)
+<table>
+  <tr><td align="center"><img src="screenshots/10-formulario.png" width="230" alt="Nuevo usuario (Admin)"><br><sub>Nuevo usuario (Admin)</sub></td><td align="center"><img src="screenshots/10b-formulario-horario.png" width="230" alt="Horario de atención (Docente)"><br><sub>Horario de atención (Docente)</sub></td></tr>
+</table>
 
-### Evidencia funcional
-![Foto equipo](screenshots/11-foto-equipo.png)
-![Navegación](screenshots/12-navegacion.png)
+### Chat y mensaje programado
+<table>
+  <tr><td align="center"><img src="screenshots/08-lista-detalle.png" width="230" alt="Chat del docente"><br><sub>Chat del docente</sub></td><td align="center"><img src="screenshots/12-chat-alumno.png" width="230" alt="Chat del alumno"><br><sub>Chat del alumno</sub></td><td align="center"><img src="screenshots/13-mensaje-programado.png" width="230" alt="Mensaje programado (fuera de horario)"><br><sub>Mensaje programado (fuera de horario)</sub></td></tr>
+</table>
