@@ -119,3 +119,9 @@ Guion sugerido: splash → login (mostrar error de validación) → registro con
 <table>
   <tr><td align="center"><img src="screenshots/08-lista-detalle.png" width="230" alt="Chat del docente"><br><sub>Chat del docente</sub></td><td align="center"><img src="screenshots/12-chat-alumno.png" width="230" alt="Chat del alumno"><br><sub>Chat del alumno</sub></td><td align="center"><img src="screenshots/13-mensaje-programado.png" width="230" alt="Mensaje programado (fuera de horario)"><br><sub>Mensaje programado (fuera de horario)</sub></td></tr>
 </table>
+
+## 7. Pruebas (`flutter test`)
+
+Resultado de correr `flutter test`: **1 prueba pasa** (*All tests passed!*). Las pruebas están en [`test/widget_test.dart`](test/widget_test.dart).
+
+<img src="screenshots/flutter_test.png" alt="Resultado de flutter test" width="900">
