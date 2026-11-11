@@ -12,6 +12,9 @@ int minutos(String hhmm) {
   return int.parse(p[0]) * 60 + int.parse(p[1]);
 }
 
+String fmtFecha(DateTime d) =>
+    '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+
 String fmtHora(DateTime d) =>
     '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
@@ -19,6 +22,7 @@ String fmtHora(DateTime d) =>
 class AppState extends ChangeNotifier {
   AppState() {
     _seed();
+    _seedExtra();
   }
 
   final List<Usuario> usuarios = [];
@@ -28,6 +32,8 @@ class AppState extends ChangeNotifier {
   final Map<String, List<HorarioDia>> horarios = {};
   final List<Conversacion> conversaciones = [];
   final List<MensajeProgramado> programados = [];
+  final List<Inscripcion> inscripciones = [];
+  final Set<String> avisosLeidos = {};
 
   Usuario? actual;
   ModoHorario modoHorario = ModoHorario.auto;
@@ -170,6 +176,61 @@ class AppState extends ChangeNotifier {
         mensajes: [
           Mensaje(deId: 'u8', texto: '¿Se entrega hoy?', hora: h(130)),
         ],
+      ),
+    ]);
+  }
+
+  void _seedExtra() {
+    final now = DateTime.now();
+    var n = 0;
+    for (final a in usuarios.where((u) => u.rol == Rol.alumno)) {
+      inscripciones.add(Inscripcion(
+        id: 'i${++n}',
+        alumnoId: a.id,
+        grupo: a.grupo ?? grupos.first,
+        fecha: DateTime(now.year, 8, 18 + n),
+      ));
+    }
+    inscripciones.add(Inscripcion(
+      id: 'i${++n}',
+      alumnoId: 'u8',
+      grupo: 'GSI-52',
+      fecha: DateTime(now.year, 1, 20),
+      estado: EstadoInscripcion.baja,
+    ));
+
+    final manana = now.add(const Duration(days: 1));
+    final ayer = now.subtract(const Duration(days: 1));
+    programados.addAll([
+      MensajeProgramado(
+        id: 'p1',
+        conversacionId: 'c1',
+        deId: 'u6',
+        texto: '¿Podemos revisar la calificación del parcial?',
+        entrega: DateTime(manana.year, manana.month, manana.day, 10),
+      ),
+      MensajeProgramado(
+        id: 'p2',
+        conversacionId: 'c1',
+        deId: 'u6',
+        texto: 'Gracias por la explicación de la clase.',
+        entrega: DateTime(ayer.year, ayer.month, ayer.day, 8),
+        estado: EstadoProgramado.enviado,
+      ),
+      MensajeProgramado(
+        id: 'p3',
+        conversacionId: 'c3',
+        deId: 'u2',
+        texto: 'Recuerden que la entrega cierra el viernes.',
+        entrega: DateTime(manana.year, manana.month, manana.day, 8),
+      ),
+      MensajeProgramado(
+        id: 'p4',
+        conversacionId: 'c1',
+        deId: 'u6',
+        texto: 'Le envío mi tarea en un momento.',
+        entrega: DateTime(ayer.year, ayer.month, ayer.day, 18),
+        estado: EstadoProgramado.cancelado,
       ),
     ]);
   }
@@ -434,7 +495,130 @@ class AppState extends ChangeNotifier {
       estado: EstadoMensaje.programado,
       etiquetaEntrega: d.etiqueta,
     ));
-    programados.add(MensajeProgramado(convId, texto.trim(), d.fecha));
+    programados.add(MensajeProgramado(
+      id: _id('p'),
+      conversacionId: convId,
+      deId: me.id,
+      texto: texto.trim(),
+      entrega: d.fecha,
+    ));
+    notifyListeners();
+  }
+
+  // ------------------------------------------------ mensajes programados
+  List<MensajeProgramado> programadosDe(Usuario u) {
+    final ids = conversacionesDe(u).map((c) => c.id).toSet();
+    final l = programados
+        .where((p) => ids.contains(p.conversacionId))
+        .toList();
+    l.sort((a, b) => b.entrega.compareTo(a.entrega));
+    return l;
+  }
+
+  void editarProgramado(MensajeProgramado p, String texto) {
+    final t = texto.trim();
+    if (t.isEmpty || p.estado != EstadoProgramado.pendiente) return;
+    final c = conversacion(p.conversacionId);
+    for (final m in c.mensajes) {
+      if (m.estado == EstadoMensaje.programado && m.texto == p.texto) {
+        c.mensajes[c.mensajes.indexOf(m)] = Mensaje(
+          deId: m.deId,
+          texto: t,
+          hora: m.hora,
+          estado: EstadoMensaje.programado,
+          etiquetaEntrega: m.etiquetaEntrega,
+        );
+        break;
+      }
+    }
+    p.texto = t;
+    notifyListeners();
+  }
+
+  void cancelarProgramado(MensajeProgramado p) {
+    if (p.estado != EstadoProgramado.pendiente) return;
+    p.estado = EstadoProgramado.cancelado;
+    conversacion(p.conversacionId).mensajes.removeWhere(
+        (m) => m.estado == EstadoMensaje.programado && m.texto == p.texto);
+    notifyListeners();
+  }
+
+  // ---------------------------------------------------------- inscripciones
+  List<Usuario> get alumnos =>
+      usuarios.where((u) => u.rol == Rol.alumno).toList();
+
+  int inscritosEn(String grupo) => inscripciones
+      .where((i) => i.grupo == grupo && i.estado == EstadoInscripcion.activa)
+      .length;
+
+  String? inscribir(String alumnoId, String grupo, DateTime fecha,
+      EstadoInscripcion estado) {
+    final dup = inscripciones.any((i) =>
+        i.alumnoId == alumnoId &&
+        i.grupo == grupo &&
+        i.estado == EstadoInscripcion.activa);
+    if (dup) return 'El alumno ya está inscrito en ese grupo.';
+    if (estado == EstadoInscripcion.activa) {
+      for (final i in inscripciones.where((i) => i.alumnoId == alumnoId)) {
+        i.estado = EstadoInscripcion.baja;
+      }
+      usuario(alumnoId).grupo = grupo;
+    }
+    inscripciones.add(Inscripcion(
+        id: _id('i'),
+        alumnoId: alumnoId,
+        grupo: grupo,
+        fecha: fecha,
+        estado: estado));
+    notifyListeners();
+    return null;
+  }
+
+  void cambiarEstadoInscripcion(Inscripcion i, EstadoInscripcion e) {
+    i.estado = e;
+    if (e == EstadoInscripcion.activa) usuario(i.alumnoId).grupo = i.grupo;
+    notifyListeners();
+  }
+
+  // ----------------------------------------------------------------- avisos
+  List<Aviso> avisosDe(Usuario u) {
+    final l = <Aviso>[];
+    for (final c in conversacionesDe(u)) {
+      final esDocente = c.docenteId == u.id;
+      final n = esDocente ? c.noLeidosDocente : c.noLeidosAlumno;
+      if (n > 0 && c.ultimo != null) {
+        final otro = usuario(esDocente ? c.alumnoId : c.docenteId);
+        l.add(Aviso(
+          id: 'm-${c.id}-${c.mensajes.length}',
+          titulo: n == 1
+              ? 'Mensaje nuevo de ${otro.nombre}'
+              : '$n mensajes nuevos de ${otro.nombre}',
+          detalle: '${c.materia} · ${c.ultimo!.texto}',
+          convId: c.id,
+          fecha: c.ultimo!.hora,
+        ));
+      }
+    }
+    for (final p in programadosDe(u)
+        .where((p) => p.estado == EstadoProgramado.enviado)) {
+      l.add(Aviso(
+        id: 'p-${p.id}',
+        titulo: 'Mensaje programado enviado',
+        detalle: p.texto,
+        convId: p.conversacionId,
+        fecha: p.entrega,
+        programado: true,
+      ));
+    }
+    l.sort((a, b) => b.fecha.compareTo(a.fecha));
+    return l;
+  }
+
+  int avisosSinLeer(Usuario u) =>
+      avisosDe(u).where((a) => !avisosLeidos.contains(a.id)).length;
+
+  void marcarAviso(String id) {
+    avisosLeidos.add(id);
     notifyListeners();
   }
 }

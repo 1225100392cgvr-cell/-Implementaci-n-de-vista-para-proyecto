@@ -6,6 +6,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'auth_screens.dart';
+import 'extra_screens.dart';
 import 'perfil_screen.dart';
 
 // ====================================================================== SHELL
@@ -115,6 +116,15 @@ class AdminHome extends StatelessWidget {
                   title: 'Materias y grupos',
                   subtitle: '${s.materias.length} materias · ${s.grupos.length} grupos',
                   onTap: () => onGo(2)),
+              ActionTile(
+                  icon: Icons.how_to_reg,
+                  title: 'Grupos e inscripciones',
+                  subtitle:
+                      '${s.inscripciones.where((i) => i.estado == EstadoInscripcion.activa).length} alumnos inscritos',
+                  color: RL.green,
+                  bg: RL.greenSoft,
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const InscripcionesScreen()))),
               ActionTile(
                   icon: Icons.swap_horiz,
                   title: 'Asignaciones',
@@ -484,7 +494,7 @@ class AsignacionesScreen extends StatelessWidget {
                                         fontWeight: FontWeight.w700)),
                               ),
                               Text(
-                                  '${s.usuarios.where((u) => u.grupo == g).length} alumnos',
+                                  '${s.inscritosEn(g)} alumnos',
                                   style: const TextStyle(
                                       color: RL.muted, fontSize: 12)),
                             ]),

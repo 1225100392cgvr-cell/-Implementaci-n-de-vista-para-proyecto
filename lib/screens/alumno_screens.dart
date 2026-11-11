@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'extra_screens.dart';
 
 import '../app_state.dart';
+import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'chat_screens.dart';
@@ -77,7 +79,10 @@ class AlumnoHome extends StatelessWidget {
         TabHeader(
           title: 'Hola, ${me.primerNombre} 👋',
           subtitle: 'Alumno · ${me.grupo ?? 'Sin grupo'}',
-          trailing: const Pill('Rol: Alumno'),
+          trailing: const Row(mainAxisSize: MainAxisSize.min, children: [
+            CampanaAvisos(),
+            Pill('Rol: Alumno'),
+          ]),
         ),
         Expanded(
           child: ListView(
@@ -119,6 +124,25 @@ class AlumnoHome extends StatelessWidget {
                     color: RL.green,
                     bg: RL.greenSoft,
                     onTap: () => onGo(1),
+                  ),
+                  _Acceso(
+                    icon: Icons.schedule,
+                    titulo: 'Horarios',
+                    detalle: 'Atención de docentes',
+                    color: RL.violet,
+                    bg: RL.violetSoft,
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const HorariosDocentesScreen())),
+                  ),
+                  _Acceso(
+                    icon: Icons.schedule_send,
+                    titulo: 'Programados',
+                    detalle:
+                        '${s.programadosDe(me).where((p) => p.estado == EstadoProgramado.pendiente).length} pendientes',
+                    color: RL.amber,
+                    bg: RL.amberSoft,
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const ProgramadosScreen())),
                   ),
                   _Acceso(
                     icon: Icons.person,

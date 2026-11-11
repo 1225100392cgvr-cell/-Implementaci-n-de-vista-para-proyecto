@@ -100,11 +100,78 @@ class Conversacion {
   Mensaje? get ultimo => mensajes.isEmpty ? null : mensajes.last;
 }
 
+enum EstadoProgramado { pendiente, enviado, cancelado }
+
+extension EstadoProgramadoX on EstadoProgramado {
+  String get nombre {
+    switch (this) {
+      case EstadoProgramado.pendiente:
+        return 'Pendiente';
+      case EstadoProgramado.enviado:
+        return 'Enviado';
+      case EstadoProgramado.cancelado:
+        return 'Cancelado';
+    }
+  }
+}
+
 class MensajeProgramado {
+  final String id;
   final String conversacionId;
-  final String texto;
-  final DateTime entrega;
-  MensajeProgramado(this.conversacionId, this.texto, this.entrega);
+  final String deId;
+  String texto;
+  DateTime entrega;
+  EstadoProgramado estado;
+  MensajeProgramado({
+    required this.id,
+    required this.conversacionId,
+    required this.deId,
+    required this.texto,
+    required this.entrega,
+    this.estado = EstadoProgramado.pendiente,
+  });
+}
+
+/// INSCRIPCIONES: relación alumno–grupo con fecha y estado.
+enum EstadoInscripcion { activa, baja }
+
+extension EstadoInscripcionX on EstadoInscripcion {
+  String get nombre =>
+      this == EstadoInscripcion.activa ? 'Activa' : 'Baja';
+}
+
+class Inscripcion {
+  final String id;
+  final String alumnoId;
+  String grupo;
+  DateTime fecha;
+  EstadoInscripcion estado;
+  Inscripcion({
+    required this.id,
+    required this.alumnoId,
+    required this.grupo,
+    required this.fecha,
+    this.estado = EstadoInscripcion.activa,
+  });
+}
+
+/// Aviso (notificación). No es una entidad del modelo: se calcula a partir
+/// de los mensajes no leídos y de los mensajes programados ya enviados.
+class Aviso {
+  final String id;
+  final String titulo;
+  final String detalle;
+  final String convId;
+  final DateTime fecha;
+  final bool programado;
+  Aviso({
+    required this.id,
+    required this.titulo,
+    required this.detalle,
+    required this.convId,
+    required this.fecha,
+    this.programado = false,
+  });
 }
 
 class Disponibilidad {

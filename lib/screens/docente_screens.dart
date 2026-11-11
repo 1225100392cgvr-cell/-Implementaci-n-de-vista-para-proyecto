@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'extra_screens.dart';
 
 import '../app_state.dart';
 import '../models.dart';
@@ -76,7 +77,10 @@ class DocenteHome extends StatelessWidget {
         TabHeader(
           title: 'Hola, ${me.primerNombre} 👋',
           subtitle: 'Docente · ${s.asignacionesDe(me.id).length} asignaciones',
-          trailing: const Pill('Rol: Docente'),
+          trailing: const Row(mainAxisSize: MainAxisSize.min, children: [
+            CampanaAvisos(),
+            Pill('Rol: Docente'),
+          ]),
         ),
         Expanded(
           child: ListView(
@@ -126,6 +130,33 @@ class DocenteHome extends StatelessWidget {
                     color: RL.violet,
                     bg: RL.violetSoft,
                     onTap: () => onGo(2),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 10),
+              Row(children: [
+                Expanded(
+                  child: _Quick(
+                    icon: Icons.schedule_send,
+                    titulo: 'Programados',
+                    detalle:
+                        '${s.programadosDe(me).where((p) => p.estado == EstadoProgramado.pendiente).length} pendientes',
+                    color: RL.amber,
+                    bg: RL.amberSoft,
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const ProgramadosScreen())),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _Quick(
+                    icon: Icons.notifications_outlined,
+                    titulo: 'Avisos',
+                    detalle: '${s.avisosSinLeer(me)} sin leer',
+                    color: RL.green,
+                    bg: RL.greenSoft,
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const AvisosScreen())),
                   ),
                 ),
               ]),

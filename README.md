@@ -16,9 +16,9 @@ Las pantallas siguen los mockups del documento *RappoLink_Mockups_Roles_ER* y el
 
 | Rol | Dashboard | Pantallas |
 |---|---|---|
-| **Administrador** | Panel de control (resumen: usuarios, docentes, alumnos, grupos) | Usuarios y roles · Materias / Grupos / Asignaciones · Formulario nuevo usuario · Formulario nueva asignación · Perfil |
-| **Docente** | "Hola, Carlos" (estado de horario, mis asignaciones, accesos rápidos) | Bandeja de chats · Chat · Horario de atención (formulario) · Perfil |
-| **Alumno** | "Hola, Ángel" (horario institucional, accesos rápidos) | Mis docentes · Chats · Chat · Mensaje programado · Perfil |
+| **Administrador** | Panel de control (resumen: usuarios, docentes, alumnos, grupos) | Usuarios y roles · Materias / Grupos / Asignaciones · **Inscripciones (lista y formulario)** · Formulario nuevo usuario · Formulario nueva asignación · Perfil |
+| **Docente** | "Hola, Carlos" (estado de horario, mis asignaciones, accesos rápidos) | Bandeja de chats · Chat · Horario de atención (formulario) · **Mensajes programados** · **Notificaciones** · Perfil |
+| **Alumno** | "Hola, Ángel" (horario institucional, accesos rápidos) | Mis docentes · **Horarios de mis docentes** · Chats · Chat · Mensaje programado · **Mensajes programados** · **Notificaciones** · Perfil |
 
 Pantallas comunes: **Splash**, **Login** (con validación) y **Registro** (con selección de rol).
 
@@ -61,6 +61,7 @@ lib/
     ├── docente_screens.dart  # dashboard y horario de atención
     ├── alumno_screens.dart   # dashboard y mis docentes
     ├── chat_screens.dart     # bandeja, chat y mensaje programado
+    ├── extra_screens.dart    # inscripciones, programados, notificaciones, horarios
     └── perfil_screen.dart    # perfil + cerrar sesión
 ```
 
@@ -120,8 +121,14 @@ Guion sugerido: splash → login (mostrar error de validación) → registro con
   <tr><td align="center"><img src="screenshots/08-lista-detalle.png" width="230" alt="Chat del docente"><br><sub>Chat del docente</sub></td><td align="center"><img src="screenshots/12-chat-alumno.png" width="230" alt="Chat del alumno"><br><sub>Chat del alumno</sub></td><td align="center"><img src="screenshots/13-mensaje-programado.png" width="230" alt="Mensaje programado (fuera de horario)"><br><sub>Mensaje programado (fuera de horario)</sub></td></tr>
 </table>
 
+### Inscripciones, mensajes programados y notificaciones
+<table>
+  <tr><td align="center"><img src="screenshots/14-inscripciones.png" width="230" alt="Lista de inscripciones"><br><sub>Lista de inscripciones</sub></td><td align="center"><img src="screenshots/15-inscripcion-form.png" width="230" alt="Formulario de inscripción"><br><sub>Formulario de inscripción</sub></td><td align="center"><img src="screenshots/16-programados.png" width="230" alt="Mensajes programados"><br><sub>Mensajes programados</sub></td></tr>
+  <tr><td align="center"><img src="screenshots/17-programado-editar.png" width="230" alt="Editar mensaje programado"><br><sub>Editar mensaje programado</sub></td><td align="center"><img src="screenshots/18-notificaciones.png" width="230" alt="Notificaciones"><br><sub>Notificaciones</sub></td><td align="center"><img src="screenshots/19-horarios-docentes.png" width="230" alt="Horarios de mis docentes"><br><sub>Horarios de mis docentes</sub></td></tr>
+</table>
+
 ## 7. Pruebas (`flutter test`)
 
-Resultado de correr `flutter test`: **1 prueba pasa** (*All tests passed!*). Las pruebas están en [`test/widget_test.dart`](test/widget_test.dart).
+Resultado de correr `flutter test`: **5 pruebas pasan** (*All tests passed!*). Las pruebas están en [`test/`](test/).
 
 <img src="screenshots/flutter_test.png" alt="Resultado de flutter test" width="900">
